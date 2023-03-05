@@ -1,0 +1,37 @@
+version: '3.8'
+
+volumes:
+  db_vol:
+
+networks:
+  db_net:
+    driver: bridge
+
+services:
+  db:
+    container_name: pg_container
+    image:  postgres:alpine3.17
+    #restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - db_net
+    volumes:
+      - db_vol:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    #restart: always
+    ports:
+      - 8080:80
+    networks:
+      - db_net
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
